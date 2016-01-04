@@ -1,0 +1,78 @@
+---
+layout: default
+title: Python
+---
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="http://yandex.st/highlightjs/7.1/styles/default.min.css">
+<script src="http://yandex.st/highlightjs/7.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+#函数
+**创建函数用def**
+
+```python
+def my_print(name, age):
+    print "hello " + name + ", age " + age
+//调用
+my_print("jql", "27")
+```
+
+## 关键字参数
+通常所用的参数叫做位置参数，关键字参数是在调用参数的时候使用name=value的形式		
+调用:
+
+```python
+my_print(age="27", name="jql")
+```
+
+关键字参数的重要作用还有可以指定默认参数：
+
+my_print(name="syx", age="25")
+
+```python
+my_print()
+```
+
+##收集参数
+
+**允许输入任意数量的位置参数， 并放在一个元组内**
+
+```python
+def my_collect(*param):
+    print param
+
+my_collect("hades", 25, True)
+```
+
+**处理默认参数时，将其放在dict中，用符号“\*\*“**
+
+```python
+def my_collect2(**param):
+    print param
+my_collect2(name="jql", age="27")
+{'age': '23', 'name': 'jql'}
+```
+
+**使用收集参数，可以执行反转过程**
+
+```python
+def with_star(*p1, **p2):
+    print p1
+    print p2
+p1 = (1, "two", True)
+{'age': '23', 'name': 'jql'}
+with_star(*p1, **p2)
+```
+
+
+
+
+
+
+
+
+
+
+
+

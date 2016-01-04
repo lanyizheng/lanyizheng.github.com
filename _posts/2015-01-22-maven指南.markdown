@@ -1,0 +1,205 @@
+---
+layout: default
+title: maven指南 
+---
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="http://yandex.st/highlightjs/7.1/styles/default.min.css">
+<script src="http://yandex.st/highlightjs/7.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="stylesheet" href="/css/pygments.css">
+
+#maven 指南
+maven 是一种java的项目管理工具，在java开发中经常需要添加jar包，使用maven可以帮助工程师自动下载这些包，管理这些包。maven可以帮助我们构建工程。当然maven还有其他重要的功能。 	
+**感谢 许晓斌著的 maven实战。**
+
+##依赖的配置
+
+```
+<depenndecies>
+    <dependency>
+        <groupId>...</groupId>
+        <artifactId>...</artifactId>
+        <version>...</version>
+        <type>...</type>
+        <scope>...</scope>
+        <optional>...</optional>
+        <exclusions>
+	    <exclusion>
+	        <groupId>...</groupId>
+                <artifactId>...</artifactId>
+	    </exclusion>
+	    ...
+        </exclusions>
+    </dependency>
+</dependencies>
+```
+
+- groupId, artifactId, version决定了一个项目的基本坐标，必须有的。groupId:项目属于那个组;artifactId:当前maven项目在组中的唯一id;version:指定了当前的版本;
+- type:依赖类型，对应于项目坐标定义的packaging。大部分情况下该元素不需要声明，默认为jar 	
+- scope:依赖的范围，默认是compile，常用的有test（如junit）、provided（如servlet） 	
+maven有3中classpath：编译、测试、运行。compile:对编译、测试、运行都有效; test:只对测试有效，编译主代码和运行项目时，无法使用该依赖，如junit。 provided:对编译和测试都有效，运行时不需要，典型的是servlet-api，由容器提供	
+- optional:依赖是否可选。当配置<optional>true</optional>时，就是可选依赖。如下情况：A-B， B->X(可选)，B->Y(可选)，那么X 和 Y 不会传递给A。当A需要用到X或者Y时，需要在pom.xml中显示的声明。
+- exclusions：用来排除传递性依赖。项目中存在一些依赖传递，可能不想引入某个版本的依赖或者发生jar包的冲突而需要去除那个特定的依赖，这是可以用到。如去掉隐式的servlet依赖，而自己在pom.xml中声明servlet依赖。
+
+## 依赖调节
+项目中有 A->B->C->X(1.0) 和 A->D->X(2.0) 这样就会发生调节。  
+
+- 第一原则是路径最近，因此上面的情况会解析X（2.0）。 
+- 第二原则是声明优先，即在pom.xml文件中依赖声明的顺序决定。
+
+**需要依赖调节的情况，可以尝试自己用exclusions标签来排除依赖，再在pom.xml中显示声明**
+
+##优化依赖
+
+Maven会自动解析项目的依赖和传递依赖，并进行调节，最后得到已经解析的依赖，可以用下面的命令查看已解析的依赖，结果还会显示已解析依赖的范围。
+
+``` 
+mvn dependency:list
+```
+
+用以下命令可以查看当前项目的依赖树 
+
+```
+mvn dependency:tree
+```
+
+分析当前项目的依赖：
+
+```
+mvn dependency:analyze
+```
+
+这个命令返回的2个重要信息：
+
+- Unused declared dependencies: 项目中使用到的，但是没有显示声明的依赖。这存在风险：当前项目可能直接用到了这些依赖，在工程中用了import这些依赖中的类，当升级直接依赖时，这些依赖可能发生版本变化，间接导致当前项目出错。如果自己的工程中直接用到了这些依赖，最好能在pom.xml显示声明。
+
+- Used undeclared dependencies：项目中未使用的，但是在pom.xml中显示的声明了。这些依赖不一定可以删除。因为这个命令只会分析编译主代码和测试代码需要用到的依赖，一些执行测试和运行时需要的依赖它发现不了。
+
+
+## 远程仓库配置
+默认的中央仓库无法满足项目的需求，或者个人喜好等各种原因，可以在pom.xml中配置。
+
+```
+<project>
+    ...
+
+    <repositories>
+        <repository>
+            <id>jboss</id>
+            <name>JBoss Repository</name>
+            <url>http://repository.jboss.com/maven2/</url>
+            <releases>
+	        <enable>true</enable>
+	        <updatePolicy>daily</updatePolicy>
+	        <checksumPolicy>warn</checksumPolicy>
+	    </releases>
+	    <snapshots>
+	        <enable>false</enable>
+	    </snapshots>
+	    <layout>default</layout>
+        </repository>
+    </repositories>
+
+    ...
+</project>
+```
+
+id是唯一的，Maven自带的中央仓库id为central，如果其他仓库声明也使用该id，就会覆盖中央仓库的配置。
+
+releases和snapshots表示发布版和快照版，true表示开启下载，false表示关闭下载。
+
+releases和snapshots还包含另外两个子元素updatePlicy和checksumPolicy。
+
+updatePolicy用来配置Maven从远程仓库检查更新的频率
+
+```
+默认值是daily，表示每天检查一次。
+never，从不检查更新
+always，每次构建都检查更新
+interval:X，每个X分钟检查一次更新
+```
+
+checksumPolicy用来配置Maven检查检验和文件的策略。在下载构建时，Maven会校验和文件，如果校验和验证失败，那么将会按照这个值的配置：
+
+```
+默认值warn，Maven会在执行构建是输出警告信息
+fail，Maven会使构建失败
+ignore，Maven完全忽略校验和错误
+```
+
+layout为default表示仓库的布局是Maven2及Maven3的默认布局，而不是Maven1。
+
+
+##远程仓库的认证
+在settings.xml文件中配置：
+
+```
+<settings>
+    ...
+
+    <servers>
+        <server>
+            <id>jql</id>
+            <username>jql</username>
+            <password>123</possward>
+        </server>
+    </servers>
+
+    ...
+</settings>
+```
+
+这里的id必须与pom.xml中的repository元素的id完全一致。
+
+##镜像
+地理位置等各种原因，下载依赖慢，镜像就能发挥作用了，在settings.xml中配置。
+
+```
+<settings>
+    ...
+    
+    <mirrors>
+        <mirror>
+	    <id>...</id>
+	    <name>...</name>
+            <url>...</url>
+	    <mirrorOf>...</mirrorOf>
+        </mirror>
+    </mirrors>
+
+    ...
+</settings>
+```
+mirrorOf元素的值，表示某个仓库的镜像，如central，那么对任何中央仓库的请求都会转至该镜像。
+
+**Maven OSChina 镜像**
+
+```
+<mirrors>
+    <mirror>
+        <id>nexus-osc</id>
+        <mirrorOf>*</mirrorOf>
+        <name>Nexus osc</name>
+        <url>http://maven.oschina.net/content/groups/public/</url>
+    </mirror>
+</mirrors>
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

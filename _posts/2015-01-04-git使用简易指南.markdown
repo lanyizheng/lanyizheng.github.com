@@ -1,0 +1,76 @@
+---
+layout: default
+title: git 简易使用指南 
+---
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="http://yandex.st/highlightjs/7.1/styles/default.min.css">
+<script src="http://yandex.st/highlightjs/7.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="stylesheet" href="/css/pygments.css">
+<p>这是java代码高亮测试</p>
+{% highlight java %}
+public String getLockWeaponsInfo(String json) {
+        BaseDTO result = new BaseDTO();
+        try {
+                JSONObject object = JSONObject.fromObject(json);
+                String device = JsonPath.read(object, "$.device");
+                List<Weapon> weapons = weaponService.getUserLockWeaponInfoByDevice(device);
+                for (Weapon weapon : weapons)
+                        weapon.setLocked(true);
+                        result.setMessage(weapons);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        result.setStateCode(BaseDTO.ERROR);
+                }
+                return JSONObject.fromObject(result).toString();
+        }
+{% endhighlight %}
+<div>
+<h1>git工作区和暂存区</h1>
+<p>工作区：电脑上看到的实际的目录</p>
+<p>版本区：保括暂存区（stage）和HEAD指针(指向master)</p>
+<p>工作区---add--->暂存区---commit--->HEAD指向的master</p>
+</div>
+#a
+##b
+
+```java
+public String getLockWeaponsInfo(String json) {
+        BaseDTO result = new BaseDTO();
+        try {
+                JSONObject object = JSONObject.fromObject(json);
+                String device = JsonPath.read(object, "$.device");
+                List<Weapon> weapons = weaponService.getUserLockWeaponInfoByDevice(device);
+                for (Weapon weapon : weapons)
+                        weapon.setLocked(true);
+                        result.setMessage(weapons);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        result.setStateCode(BaseDTO.ERROR);
+                }
+                return JSONObject.fromObject(result).toString();
+        }
+
+```
+
+```html
+    <div>Syntax Highlighting</div>
+```
+```css
+    body{font-size:12px}
+```
+ 
+```javascript
+    var s = "JavaScript syntax highlighting";
+    alert(s);
+```
+```php
+    <?php
+      echo "hello, world!";
+    ?>
+```
+```python
+    s = "Python syntax highlighting"
+    print s
+```
+

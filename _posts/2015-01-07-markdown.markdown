@@ -1,0 +1,98 @@
+---
+layout: default
+title: markdown 语法介绍
+---
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="http://yandex.st/highlightjs/7.1/styles/default.min.css">
+<script src="http://yandex.st/highlightjs/7.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="stylesheet" href="/css/pygments.css">
+
+
+
+
+
+#概述	
+Markdown语法简单，非常容易入门，给我这种不会css的人带来来很多方便。用markdown写笔记或者博客可以有好看的样式，又不需要知道css。markdown语法很少，是一种书写格式，最终转换成html。但是html区块标签见的markdown语法不会被处理。	
+#区块元素
+##段落和换行
+一个 Markdown 段落是由一个或多个连续的文本行组成，它的前后要有一个以上的空行（空行的定义是显示上看起来像是空的，便会被视为空行。比方说，若某一行只包含空格和制表符，则该行也会被视为空行）。	
+如果你确实想要依赖 Markdown 来插入 ```<br/> ``` 标签的话，在插入处先按入两个以上的空格（或者tab）然后回车。
+##标题
+采用如下形式：
+
+```
+#H1
+##H2
+###H3
+####H4
+#####H5
+######H6
+```
+效果是这样子的：
+#H1
+##H2
+###H3
+####H4
+#####H5
+######H6
+
+#列表
+markdown支持有序列表和无序列表
+有序列表的书写格式：
+
+```
+1. Red
+2. Green
+3. Blue
+```
+效果如下：
+
+1. Red
+2. Green
+3. Blue
+
+ 无序列表书写格式：
+
+```
+- Red
+- Green
+- Blue
+```
+效果如下：
+
+- Red
+- Green
+- Blue
+
+#代码块
+用```表示：
+
+```
+	```
+		代码
+	```
+```
+
+#图片
+
+```
+ ![文字][/path/to/image]
+```
+效果：
+
+![汤唯](/images/tangwei.jpeg)
+
+#强调
+
+```
+粗体:
+**hello world**
+斜体:
+*hello world*
+```
+###这是粗体  **hello world**	
+###这是斜体  *hello world*	
+
+
+

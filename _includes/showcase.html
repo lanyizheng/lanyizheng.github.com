@@ -1,0 +1,12 @@
+    </div>
+    <style>
+    .showcase-wrapper {background-image: url("{{ site.baseurl }}/images/showcase.jpg");}
+    </style>
+    <div class="showcase-wrapper sticky">
+      <div class="showcase-text">
+          {% for post in site.posts limit: 1 %}
+          <span class="badge lazy"><smaller>最新的文章</smaller></span><br>{{ post.title }}<br><a href="{{ site.baseurl }}{{ post.url }}"><button type="button" class="btn btn-default showcase-button">更多文章，点击这里</button></a>
+          {% endfor %}
+      </div>
+    </div>
+    <div class="container">

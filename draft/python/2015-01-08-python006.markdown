@@ -1,0 +1,44 @@
+---
+layout: default
+title: Python 字符串
+---
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="http://yandex.st/highlightjs/7.1/styles/default.min.css">
+<script src="http://yandex.st/highlightjs/7.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="stylesheet" href="/css/pygments.css">
+<link rel="stylesheet" href="/css/syntax.css">
+
+
+
+#字符串
+**所有标准的对列表的操作对字符串都适用，注意：字符串是不可变的。**
+##find方法：在一个字符串中查找模式，返回最左端的索引，没有找到返回-1
+
+```
+title = "hello world, hello jql!"
+title.find("hello") 返回： 0
+title.find("hello", 10) 返回：13. 参数10表示（包含的）起点
+title.find("hello", 10, 15) 返回：-1. 参数15表示（不包含的）终点
+
+```
+
+##join方法：连接字符串，与split方法相反
+##split方法：切割字符串，返回一个序列
+##strip方法：等同于java string的trim方法，取出字符串两端的空格
+##lower方法：返回全部小写字母
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,42 @@
+---
+title: Ubuntu jekyll 安装
+---
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="http://yandex.st/highlightjs/7.1/styles/default.min.css">
+<script src="http://yandex.st/highlightjs/7.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="stylesheet" href="/css/pygments.css">
+
+
+#ubuntu 环境下，安装jekyll的步骤
+- 安装ruby
+
+```
+sudo apt-get install ruby1.9.1
+sudo apt-get install ruby1.9.1-dev
+```
+
+- 安装markdown解析器
+
+```
+gem install rdiscount
+```
+
+- 安装Pygments语法高亮
+
+```
+sudo apt-get install python-pygments
+```
+
+- 安装jekyll
+
+```
+gem install jekyll
+```
+
+-  nodejs
+
+```
+sudo apt-get install nodejs
+``` 
+

@@ -1,0 +1,33 @@
+---
+title: Python tuple
+---
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="http://yandex.st/highlightjs/7.1/styles/default.min.css">
+<script src="http://yandex.st/highlightjs/7.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="stylesheet" href="/css/pygments.css">
+
+
+# tuple
+
+tuple也是有序集合，叫元组，它与list的区别是：tuple一旦初始化，便不能修改。
+
+因此tuple没有append(), insert()这些方法，也不能赋值置换。获取元素的方法和lis一样。
+
+```python
+language = ("Chinese", "English", "Japanese")
+如用逗号分割一些值，也会自动创建元组，如：
+1, 2, "hello"
+只有一个元素的tuple需要这样表示：
+t = (1,)
+```
+##tuple函数：通过一个序列创建元组
+
+```python
+a = [1, "a", True]
+b = tuple(a)
+执行后b的值： (1, "a", True)
+```
+
+
+

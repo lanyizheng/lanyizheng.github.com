@@ -1,0 +1,154 @@
+---
+title: Python list
+---
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="http://yandex.st/highlightjs/7.1/styles/default.min.css">
+<script src="http://yandex.st/highlightjs/7.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="stylesheet" href="/css/pygments.css">
+
+# list
+
+list是python内置的一种数据结构,有序的集合
+
+```
+language = ["Chinese", "English", "Japanese"]
+可通过 list("string")来创建这种列表： ["s", "t", "r", "i", "n", "g"]
+```
+计算长度：
+
+```
+len(language)
+```
+
+元素的访问用下表：
+
+```
+language[0], language[1]
+```
+
+可以从后往前访问，最后一个元素是：
+
+```
+language[-1]
+```
+
+倒数第二个是:
+
+```
+language[-2]
+```
+
+不能越界，如访问language[3],language[-4]都将出错
+
+末尾追加元素：
+
+```
+language.append("French")
+```
+
+末尾删除元素：
+
+```
+language.pop()
+```
+
+指定位置插入元素：
+
+```
+language.insert(1, "German")
+```
+
+指定位置删除元素：
+
+```
+language.pop(1) 或 del language[1]
+```
+
+元素置换：
+
+```
+language[1] = 108
+```  
+
+list里面的数据类型可以不同，甚至是list类型，如：
+
+```
+language = ["Chinese", 108, True, ["apple", False]]
+```
+
+list可以没有元素，如： 
+
+```
+classmates = []
+```
+
+那么len(classmates) 为 0
+
+##count方法：统计某个元素在列表中出现的次数
+
+```
+l = [1, ["a", True], "hello", ["a", True]]
+l.count(["a", True]) 输出：2
+```
+##extend方法:在列表末尾一次性添加另一个序列的多个值
+**注意和加操作的区别**
+
+```
+a = [1, 2, 3]
+b = ["a", "o", "e"]
+a + b 的结果是： [1, 2, 3, 'a', 'o', 'e']
+但 a 的值仍然是 [1, 2, 3]
+而
+a.extend(b) 执行后， a的值： [1, 2, 3, 'a', 'o', 'e']
+其效果与  a[len(a):] = b 相同
+```
+##index方法:找出列表中第一个与模式匹配的索引位置
+
+```
+knight = ["A", "are", "the", "knights", "who", "are", "are", "who"]
+knight.index("who") 结果是： 4
+```
+##reverse:将列表的元素反响存放
+
+```
+x = [1, 2, 3]
+x.reverse() 执行后， x的值： [3, 2, 1]
+```
+##sort:排序，会改变原来的列表
+
+```
+x = [5, 9, 8, 6, 1, 8]
+x.sort()执行后， x值：[1, 5, 6, 8， 8, 9]
+```
+##sorted:排序，返回已排序的列表的副本
+**这个函数可以应用于所有序列，但总是返回一个列表**
+
+```
+y = x
+y.sort()执行后，x 和 y的值都一样，y只是指向了列表x
+而执行y = x.sorted()后，x并未排序，y是一个x排序后的副本
+```
+sort()默认的排序规则是按升序，可以传入一个比较函数，这样可以按照自己的方式排序。	
+sort()还有两个可选的参数：key 和 reverse，如果要使用，就要通过名字指定（关键字参数）		
+
+
+**分片赋值**
+
+```
+name = list("python") 则name值为： ["p", "y", "t", "h", "o", "n"]
+name[2:5] = list("xxxyyy") 
+则name值为：["p", "y", "x", "x", "x", "y", "y", "y", "o", "n"]
+(既可以赋值，也可以插入)
+name[5:8] = [] 则name值为：["p", "y", "x", "x", "x", "o", "n"]
+因此可以认为分片的赋值是”替换“操作
+```
+**列表推导式**
+
+```python
+[x*x for x in range(10) if x % 3 == 0]
+```
+
+
+
+

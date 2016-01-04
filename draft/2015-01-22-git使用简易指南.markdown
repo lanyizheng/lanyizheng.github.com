@@ -1,0 +1,11 @@
+---
+layout: default
+title: maven指南 
+---
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="/css/pygments.css">
+
+#maven 指南
+maven 是一种java的项目管理工具，在java开发中经常需要添加jar包，使用maven可以帮助工程师自动下载这些包，管理这些包，当然maven还有其他重要的功能，本篇文章是我看了许晓斌著的maven实战，并结合我自己的java开发经验写成了。
+
+

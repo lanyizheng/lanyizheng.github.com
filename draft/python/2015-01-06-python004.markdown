@@ -1,0 +1,35 @@
+---
+title: Python set
+---
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="http://yandex.st/highlightjs/7.1/styles/default.min.css">
+<script src="http://yandex.st/highlightjs/7.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="stylesheet" href="/css/pygments.css">
+
+
+# set
+
+**set是一组key的集合，但不存出value,且key不重复**
+
+```python
+s = set(["jql", "syx", 365])
+```
+传入的是一个list，如果这个list中存在重复的值，则会被过滤掉	
+通过add(key)和remove(key)来添加和删除元素
+
+```python
+s.add("hello world")
+s.remove("hello world")
+```
+集合可以做与或运算
+
+```python
+s1 = set([1, 2, 3])
+s2 = set([2, 3, 4])
+s1 & s2 的结果是set([2, 3])
+s1 | s2 的结果是set([1, 2, 3, 4])
+```
+
+
+

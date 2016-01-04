@@ -1,0 +1,85 @@
+---
+title: Python dict
+---
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="http://yandex.st/highlightjs/7.1/styles/default.min.css">
+<script src="http://yandex.st/highlightjs/7.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="stylesheet" href="/css/pygments.css">
+
+
+# dict
+**python内置的字典是dict,即map，键值对，具有快速查找的作用。**
+
+```python
+info = {"jql":1988, "syx":1990}
+也可以通过dict函数：
+items = [("C", 2011), ("C#", 2013), ("java", 2013), ("Python", 2015)]
+d = dict(items)
+d的值：{'C#': 2013, 'Python': 2015, 'C': 2011, 'java': 2013}
+```
+
+可以通过key取得value	
+
+```python
+info["jql"]
+```
+修改key对应的value
+
+```python
+info["jql": "syx"]
+```
+
+如果没有key，获取value就会报错，要避免这种错误有2种方式：
+
+
+
+-  判断
+
+```python
+"jql" in info
+会返回 True
+```
+
+-  通过get方法如果key不存在，返回None,或者指定的值
+
+```python
+info.get("hello")
+返回None(不显示任何信息)
+info.get("hello", "null")
+返回null
+```
+
+
+删除一个key用pop(key)方法，对应的value也会删除
+
+```python
+info.pop("jql")
+eass="prettyprint">这是你的代码</pre>`
+
+注意：dict的key必须是不可变对象，因为dict是根据key来计算（哈系算法）value的存储位置的。			
+如果每次计算相同的key得出不同的结果，那么dict内部就混乱来，因此要保证正确性，key必须是不可变的。
+
+- clear方法：清除字典中的所有项
+- items方法：返回一个元组
+
+```python
+d = {"a":"A", "b":"B", "c":"C"}
+d.items() 返回：[('a', 'A'), ('c', 'C'), ('b', 'B')]
+```
+
+**补充：内建的zip函数比较有用**
+
+```python
+names = ["jql", "syx", "hades"]
+ages = [27, 25]
+执行：zip(names, age) 返回：[('jql', 27), ('syx', 25)]
+注意：可以处理任意长序列
+```
+
+
+
+
+
+
+
