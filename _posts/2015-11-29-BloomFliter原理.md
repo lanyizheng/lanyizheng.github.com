@@ -35,6 +35,7 @@ BloomFilter算法接近方法4，只是哈希函数采用了多个。
 - 1）如果所有位都不为1，这str一定没有被记录过。
 - 2）如果所有位不全位1，这个str也一定是没有被记录过
 - 3）如果所有位全部为1，不能100％肯定字符串被记录过（有可能刚好这个字符串所有位是被其他字符串所对应的），这种错误划分的情况，记作 false positive。
+
 ###(3)删除字符串过程
 字符串加入了就不能删除了，因为删除会影响到其他字符串。如果一定要删除字符串，可以采用Counting BloomFilter(CBF),这是一个变体，它将每一个Bit位改为一个计数器，这样就可以实现删除字符串的功能。
 
@@ -57,13 +58,13 @@ BloomFilter算法接近方法4，只是哈希函数采用了多个。
 
 **使用**： 根据不同级别过滤storefile,
 
-- 1)ROW,根据KeyValue中的ROW过滤storefile
+- 1)**ROW**,根据KeyValue中的ROW过滤storefile
 *example1*: 假设有两个storefile文件sf1和sf2,
 sf1包含kv1(r1 cf:q1 v)、kv2(r2 cf:q1 v）
 sf2包含kv3(r3 cf:q1 v)、kv4(r4 cf:q1 v)
 如果设置CF属性中的bloomFilter为ROW，那么get(r1)会过滤sf2.
 
-- 2)ROWCOL,根据KeyValue中的Row＋qualifier来过滤StoreFile
+- 2)**ROWCOL**,根据KeyValue中的Row＋qualifier来过滤StoreFile
 *example2* :假设有两个storefile文件sf1和sf2,
 sf1包含kv1(r1 cf:q1 v)、kv2(r2 cf:q1 v）
 sf2包含kv3(r1 cf:q1 v)、kv4(r2 cf:q1 v)
