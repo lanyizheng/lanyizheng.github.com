@@ -1,0 +1,200 @@
+﻿# python中的一些特殊关键字
+
+标签（空格分隔）： python 关键字
+
+[TOC]
+
+---
+##1.with语句
+场景：有一些任务，可能需要设置和清理工作，python的with语句提供了一种方便的处理方式，我们可以看看文件处理的例子。
+
+不用with语句：
+
+```python
+file = open("/tmp/foo.txt")
+data = file.read()
+file.close()
+```
+这里会出现两个问题：
+
+ 1. 可能忘记关闭句柄
+ 2. 文件读取发生异常，没有处理
+ 
+下面是修改后的:
+```python
+file = open("/tmp/foo.txt")
+try:
+    data = file.read()
+finally:
+    file.close()
+```
+这段代码虽然没问题，但是比较冗长，这时候就可以用with来处理上下文环境产生的异常:
+```python
+with open("/tmp/foo.txt") as file:
+    data = file.read()
+```
+
+###1.1 with如何工作
+with所求值的对象必须有一个 __enter__()方法和一个__exit__()方法。
+with后面的语句被求值后，返回对象的__enter__()方法被调用，这个方法的返回值将被赋值给as 后面的变量，with 后面的代码块全部bei执行后，将调用前面返回对象的__exit__()方法。
+下面有个例子:
+```python
+class Sample:
+    def __enter__(self):
+        print "In __enter__() method"
+        return "Foo"
+    def __exit__(self,type,value,trace):
+        print "In __exit__() method"
+def get_sample():
+    return Sample()
+
+with get_sample() as sample:
+    print "Sample",sample
+```
+执行这个程序的结果如下：
+```
+In __enter__() method
+Sample: Foo
+In __exit__() method
+```
+可以看到是以下执行过程：
+
+ 1.  __enter__()方法被执行
+ 2.  __enter__()方法的返回值赋值给 as 变量
+ 3.  执行 with代码块（这里打印变量"sample"为Foo）
+ 4.  __exit()方法被调用
+ 
+with强大之处在于能够处理异常,__exit__方法有三个参数，val,type,trace,这些参数在处理异常时很有用:
+```python
+class Sample:
+    def __enter__(self):
+        return self
+    def __exit__(self,type,value,trace):
+        print "type:",type
+        print "Value:",value
+        print "trace:",trace
+    def do_something(self):
+        bar=1/0
+        return bar+10
+with Sample() as sample:
+    sample.do_something()
+```
+ 会出现下面这个结果：
+ 
+```
+ type: <type 'exceptions.ZeroDivisionError'>
+Traceback (most recent call last):
+Value: integer division or modulo by zero
+  File "/Users/lanyizheng/python/test/test_with.py", line 13, in <module>
+trace: <traceback object at 0x10240a758>
+    sample.do_something()
+  File "/Users/lanyizheng/python/test/test_with.py", line 10, in do_something
+    bar=1/0
+ZeroDivisionError: integer division or modulo by zero
+
+```
+ 当with后面的代码抛出异常时，__exit__()方法被执行，与之关联的var,value,stack trace传递给__exit__()方法。开发库时，清理资源和关闭文件，都可以放在__exit__()方法。
+ 
+## 2.yield
+ 
+ **yield**是"产生，生成"的意思，在python中作为生成器来理解，生成器的主要作用是迭代.
+ 
+ 在理解yield之前，我们有必要了解一下iterator和generator.
+ 
+### 2.1 Iterator
+ 
+ 当我们创建一个list,便能够一个接一个地读取元素，这样地过程称作iteration.
+ 
+ 像我们常见的for循环可以用于任何“可迭代的对象”，可迭代的对象就是一个迭代器,迭代器是一个实现了迭代器协议的对象，比如:列表就是一个迭代器。
+ 
+ 下面举个例子：
+ 
+```
+ >>> myList=[1,2,3]
+ >>> for i  in myList:
+ ...   print(i)
+ 1
+ 2
+ 3
+```
+ 
+###2.2 Generators
+
+Generators也是Itetators,但是仅仅能够遍历一次,这是因为它们没有将values存储在内存中：
+
+```
+myGenerator=(x*x for x in range(3))
+for i in myGenerator:
+    print(i)
+#输出结果
+0
+1
+4
+```
+
+它和iterator形式上很像，只是使用`()` 代替了`[]`,但是不能再次遍历，它只能被使用一次,如果继续使用myGenerator遍历，结果是空。
+
+###2.3 yield
+
+`yield`用法有点类似`return`,只是函数返回一个Generator.
+
+当我们每次调用Generator的next函数时，生成器函数会运行到yield之处，返回yield后面的值且在这个地方暂停，所有的状态被保持住，等待下一次的next函数被调用，或者碰到异常退出。
+
+我们看一个例子：
+
+```
+def fib(max):
+    a,b=1,1
+    while a<max:
+        yield a
+        a,b=b,a+b
+```
+我们执行一下函数看看结果:
+
+```
+for i in fib(15):
+    print i
+#结果
+1
+1
+2
+3
+5
+8
+13
+```
+
+当函数运行到yield这行时，不会继续往下执行,而是返回一个包含当前函数的所有参数的状态的iterator对象，目的是为了下次调用是，能过访问到所有参数值都是上次访问的值，而不是重新赋值。
+
+实际上for循环的遍历就是在执行generator的next方法,我们执行七次next()方法的效果等同于上面的结果,下面是相同结果的代码：
+
+```
+fun=fib(15)
+for i in range(7):
+    fun.next()
+```
+
+如果上面的例子不使用yield关键字，那么只能写迭代器类。
+
+```
+class Fib:
+    def __init__(self,max):
+        self.max=max
+    def __iter__(self):
+        self.a=0
+        self.b=1
+        return self
+    def next(self):
+        fib=self.a
+        if fib>self.max:
+            raise StopIteration
+        self.a,self.b=self.b,self.a+self.b
+        return fib
+```
+
+可以看出，使用yield可以避免写迭代器的繁琐代码。
+
+ 
+ 
+ 
+ 
