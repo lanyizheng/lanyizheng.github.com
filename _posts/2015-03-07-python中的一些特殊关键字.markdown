@@ -1,8 +1,6 @@
-﻿# python中的一些特殊关键字
+# python中的一些特殊关键字
 
-标签（空格分隔）： python 关键字
 
-[TOC]
 
 ---
 ##1.with语句
@@ -21,6 +19,7 @@ file.close()
  2. 文件读取发生异常，没有处理
  
 下面是修改后的:
+
 ```python
 file = open("/tmp/foo.txt")
 try:
@@ -28,7 +27,9 @@ try:
 finally:
     file.close()
 ```
+
 这段代码虽然没问题，但是比较冗长，这时候就可以用with来处理上下文环境产生的异常:
+
 ```python
 with open("/tmp/foo.txt") as file:
     data = file.read()
@@ -38,6 +39,7 @@ with open("/tmp/foo.txt") as file:
 with所求值的对象必须有一个 __enter__()方法和一个__exit__()方法。
 with后面的语句被求值后，返回对象的__enter__()方法被调用，这个方法的返回值将被赋值给as 后面的变量，with 后面的代码块全部bei执行后，将调用前面返回对象的__exit__()方法。
 下面有个例子:
+
 ```python
 class Sample:
     def __enter__(self):
@@ -51,12 +53,15 @@ def get_sample():
 with get_sample() as sample:
     print "Sample",sample
 ```
+
 执行这个程序的结果如下：
+
 ```
 In __enter__() method
 Sample: Foo
 In __exit__() method
 ```
+
 可以看到是以下执行过程：
 
  1.  __enter__()方法被执行
@@ -65,6 +70,7 @@ In __exit__() method
  4.  __exit()方法被调用
  
 with强大之处在于能够处理异常,__exit__方法有三个参数，val,type,trace,这些参数在处理异常时很有用:
+
 ```python
 class Sample:
     def __enter__(self):
@@ -79,7 +85,8 @@ class Sample:
 with Sample() as sample:
     sample.do_something()
 ```
- 会出现下面这个结果：
+
+会出现下面这个结果：
  
 ```
  type: <type 'exceptions.ZeroDivisionError'>
@@ -93,6 +100,7 @@ trace: <traceback object at 0x10240a758>
 ZeroDivisionError: integer division or modulo by zero
 
 ```
+
  当with后面的代码抛出异常时，__exit__()方法被执行，与之关联的var,value,stack trace传递给__exit__()方法。开发库时，清理资源和关闭文件，都可以放在__exit__()方法。
  
 ## 2.yield
@@ -198,3 +206,4 @@ class Fib:
  
  
  
+
