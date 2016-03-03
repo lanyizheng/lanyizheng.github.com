@@ -1,0 +1,136 @@
+# luigi的介绍与使用
+
+
+---
+
+##1、准备环境
+hadoop (单机版，本地模式)
+spark （单机版，本地模式）
+python2.7
+
+##2、介绍
+**Luigi**是一个python的一个包，帮我们构建复杂的批处理的任务。它可以用来解决依赖解析，工作流管理，任务可视化，错误处理，命令行集成。
+
+Luigi的目的是解决长时间运行的批处理的任务，你可能需要跟踪很多任务，错误可能发生。这些任务典型的就是Hadoop 任务，从数据库取写数据，或者运行机器学习的算法。我们可以很方便构建长时间运行的任务流（由成千上万个任务构成），Luigi托管这些工作流，我们就可以专注于任务本身和依赖。
+
+##3.安装和启动
+安装：`pip install luigi`
+lugid服务启动：`luigid &`
+
+##4.最简单的的例子
+下面是Luigi运行的简单了例子,文件名为my_module.py
+
+```
+# my_module.py, available in your sys.path
+import luigi
+class MyTask(luigi.Task):
+    x = luigi.IntParameter()
+    y = luigi.IntParameter(default=45)
+    def run(self):
+        print self.x + self.y
+```
+
+运行方式：
+```
+python -m luigi --module my_module MyTask --x 10
+```
+
+##5.运行Hadoop的jar包
+我们直接使用Hadoop 官网自带的例子：
+```
+hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.2.0.jar wordcount /user/lanyizheng/input/test /user/lanyizheng/output
+```
+查看结果：
+`hadoop fs -cat /user/lanyizheng/output/*`
+
+我们可以采用Luigi的集成hadoop任务的功能，下面是对上面的任务的一个python写法：
+
+```
+#LuigiWordCount.py
+import luigi
+from luigi.contrib.hadoop_jar import HadoopJarJobTask
+from luigi.contrib.hdfs.target import HdfsTarget
+class TestHadoop(HadoopJobTask):
+    def output(self):
+        reurn HdfsTarget('hdfs://localhost:9000/user/lanyizheng/output')
+    def jar(self):
+        return '/Users/lanyizheng/software/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.2.0.jar'
+    #入口类
+    def main(self):
+        return 'wordcount'
+    #main方法的参数    
+    def args(self):
+        return ['/user/lanyizheng/input/test','/user/lanyizheng/output']
+```
+
+运行上面的代码：
+`python -m luigi --module LuigiWordCount TestHadoop`
+
+##6.运行Spark的WordCount例子
+我们先将程序打包成可执行的jar包，包名是WDSpark.jar（带有依赖）
+下面是python程序：
+
+```
+#Spark_Test.py
+import luigi
+
+from luigi.contrib.spark import SparkSubmitTask
+from luigi import configuration
+class Test(SparkSubmitTask):
+    #入口类
+    entry_class = "org.apache.spark.examples.JavaWordCount"
+    app = "/Users/lanyizheng/PycharmProjects/SparkLuigi/WDSpark.jar"
+    master = "local[2]"
+    #main方法的参数
+    def app_options(self):
+        return ['hdfs://localhost:9000/user/lanyizheng/input/test']
+
+```
+
+运行例子：
+`python -m luigi --module Spark_Test Test`
+
+##7.直接使用Luigi的API来实现WordCount
+这里没有jar包，map和reduce阶段都是python实现的，需要调用hadoop-streaming的jar包。
+
+首先需要在当前工程目录下，添加一个配置文件（client.cfg）:
+
+```
+[hadoop]
+streaming-jar: /Users/lanyizheng/software/hadoop/share/hadoop/tools/lib/hadoop-streaming-2.2.0.jar
+```
+
+下面是具体的实现的python代码：
+
+```
+#Hadoop_WordCount.py
+import luigi
+import luigi.contrib.hadoop
+import luigi.contrib.hdfs
+class InputText(luigi.ExternalTask):
+    def output(self):
+        return luigi.contrib.hdfs.HdfsTarget("hdfs://localhost:9000/user/lanyizheng/input/test")
+
+class WordCount(luigi.contrib.hadoop.JobTask):
+    def requires(self):
+        return InputText()
+    def output(self):
+        return luigi.contrib.hdfs.HdfsTarget("/user/lanyizheng/luigiOut")
+    def mapper(self,line):
+        for word in line.strip().split(" "):
+            yield  word,1
+    def reducer (self,key,values):
+        yield key,sum(values)
+
+if __name__ == '__main__':
+    luigi.run()
+```
+
+运行例子：
+`python -m luigi --module Hadoop_WordCount WordCount`
+
+
+
+
+
+
